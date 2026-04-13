@@ -4,9 +4,11 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   try {
-    const { jobDescription, jobAnalysis } = await request.json()
+    const { jobDescription, jobAnalysis, profileId } = await request.json()
 
+    // Retrieve specific profile, or default fallback
     const profile = await prisma.profile.findFirst({
+      where: profileId ? { id: profileId } : { isDefault: true },
       include: {
         skills: { orderBy: { order: 'asc' } },
         experiences: {

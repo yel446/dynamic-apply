@@ -9,6 +9,8 @@ datasource db {
 // Profil de base (infos permanentes)
 model Profile {
   id        String   @id @default(cuid())
+  name      String   @default("Profil Base") // Le nom du variant
+  isDefault Boolean  @default(false)
   fullName  String
   title     String   // ex: "Digital Product Manager"
   email     String
@@ -26,6 +28,7 @@ model Profile {
   education      Education[]
   certifications Certification[]
   languages      Language[]
+  applications   Application[]
 }
 
 model Skill {
@@ -101,6 +104,9 @@ model Application {
   appliedAt      DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+
+  baseProfileId  String?
+  baseProfile    Profile?  @relation(fields: [baseProfileId], references: [id], onDelete: SetNull)
 
   // CV adapté
   adaptedSummary String? @db.Text

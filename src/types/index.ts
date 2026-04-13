@@ -7,6 +7,8 @@ export type CoverLetterTone = 'formal' | 'dynamic' | 'creative'
 // Profil complet avec relations
 export interface ProfileWithRelations {
   id: string
+  name: string
+  isDefault: boolean
   fullName: string
   title: string
   email: string
@@ -109,6 +111,7 @@ export interface ApplicationData {
   appliedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  baseProfileId: string | null
   adaptedSummary: string | null
   adaptedSkills: string | null
   adaptedBullets: string | null

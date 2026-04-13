@@ -13,30 +13,22 @@ export async function POST(request: Request) {
       )
     }
 
-    // Récupérer le profil de base
-    const profile = await prisma.profile.findFirst({
-      include: {
-        skills: { orderBy: { order: 'asc' } },
-        experiences: {
-          orderBy: { order: 'asc' },
-          include: { missions: { orderBy: { order: 'asc' } } },
-        },
-      },
-    })
+    // Récupérer tous les profils de base pour la sélection intelligente
+    const profiles = await prisma.profile.findMany()
 
-    if (!profile) {
+    if (!profiles || profiles.length === 0) {
       return NextResponse.json(
-        { error: 'Profil non trouvé. Veuillez d\'abord configurer votre profil.' },
+        { error: 'Aucun profil trouvé. Veuillez d\'abord configurer votre profil de base.' },
         { status: 404 }
       )
     }
 
-    const profileSummary = `
-Profil : ${profile.fullName} — ${profile.title}
-Résumé : ${profile.summary}
-Compétences : ${profile.skills.map(s => `${s.category}: ${s.items}`).join(' | ')}
-Expériences : ${profile.experiences.map(e => `${e.jobTitle} chez ${e.company} (${e.startDate} - ${e.endDate || "Aujourd'hui"})`).join(' | ')}
-`
+    const profilesContext = profiles.map(p => `
+--- PROFIL ID: ${p.id} ---
+Nom: ${p.name}
+Titre: ${p.title}
+Résumé: ${p.summary}
+`).join('\n')
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
@@ -46,7 +38,7 @@ Expériences : ${profile.experiences.map(e => `${e.jobTitle} chez ${e.company} (
         { role: 'system', content: SYSTEM_PROMPTS.analyzeOffer },
         {
           role: 'user',
-          content: `OFFRE D'EMPLOI :\n${jobDescription}\n\nPROFIL DU CANDIDAT :\n${profileSummary}`,
+          content: `OFFRE D'EMPLOI :\n${jobDescription}\n\nPROFILS DISPONIBLES (choisis le ID du plus pertinent) :\n${profilesContext}`,
         },
       ],
     })

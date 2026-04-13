@@ -8,10 +8,11 @@ export const openai = new OpenAI({
 export const SYSTEM_PROMPTS = {
   analyzeOffer: `Tu es un expert en recrutement et en ATS (Applicant Tracking Systems). 
 Analyse l'offre d'emploi fournie et extrais les informations suivantes en JSON :
+- recommendedProfileId: l'ID du profil fourni le plus aligné avec l'offre
 - keywords: les mots-clés ATS importants (technologies, compétences, méthodologies)
 - requiredSkills: les compétences requises
 - experienceLevel: le niveau d'expérience demandé
-- atsScore: un score estimé (0-100) de compatibilité entre le profil fourni et cette offre
+- atsScore: un score estimé (0-100) de compatibilité entre le profil RECOMMANDÉ et cette offre
 - gaps: les lacunes identifiées entre le profil et l'offre
 - suggestions: {
     summary: suggestion pour adapter le résumé professionnel,

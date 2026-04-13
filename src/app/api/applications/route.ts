@@ -12,6 +12,7 @@ export async function POST(request: Request) {
         jobUrl: body.jobUrl || null,
         jobDescription: body.jobDescription || null,
         status: body.status || 'draft',
+        baseProfileId: body.baseProfileId || null,
         adaptedSummary: body.adaptedSummary || null,
         adaptedSkills: body.adaptedSkills || null,
         adaptedBullets: body.adaptedBullets || null,

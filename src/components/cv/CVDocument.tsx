@@ -1,6 +1,6 @@
 'use client'
 
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet, Font, Link } from '@react-pdf/renderer'
 import type { ProfileWithRelations } from '@/types'
 
 // Register fonts
@@ -22,220 +22,275 @@ Font.register({
   ],
 })
 
-// Disable hyphenation for ATS
+// Enable single-word chunks for ATS parsing safety (no weird hyphenations)
 Font.registerHyphenationCallback((word) => [word])
 
 const COLORS = {
-  primary: '#1A365D',
+  primary: '#1A365D', // Bleu Nuit original du Figma
   primaryLight: '#2B6CB0',
-  text: '#1A202C',
-  textSecondary: '#4A5568',
-  textLight: '#718096',
-  accent: '#EBF4FF',
-  border: '#E2E8F0',
+  primaryLighter: '#EBF4FF',
+  text: '#111827',
+  textSecondary: '#374151',
+  textLight: '#6B7280',
+  border: '#E5E7EB',
   white: '#FFFFFF',
 }
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 40,
-    paddingBottom: 40,
-    paddingHorizontal: 45,
+    paddingTop: 45,
+    paddingBottom: 45,
+    paddingHorizontal: 50,
     fontFamily: 'Inter',
-    fontSize: 9,
+    fontSize: 9.5,
     color: COLORS.text,
-    lineHeight: 1.4,
+    lineHeight: 1.5,
+    backgroundColor: COLORS.white,
   },
-  // Header
-  header: {
+  
+  // Header Section
+  headerContainer: {
     marginBottom: 20,
-    borderBottom: `2px solid ${COLORS.primary}`,
-    paddingBottom: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.primary,
+    borderBottomStyle: 'solid',
+    paddingBottom: 15,
   },
   name: {
     fontFamily: 'PlusJakartaSans',
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: 700,
     color: COLORS.primary,
-    marginBottom: 2,
-    letterSpacing: 0.5,
+    marginBottom: 4,
+    letterSpacing: -0.5,
+    textTransform: 'uppercase',
   },
   title: {
-    fontSize: 12,
-    fontWeight: 500,
-    color: COLORS.primaryLight,
-    marginBottom: 8,
+    fontSize: 13,
+    fontWeight: 600,
+    color: '#2A4365',
+    marginBottom: 10,
+    letterSpacing: 0.5,
   },
-  contactRow: {
+  contactGrid: {
     flexDirection: 'row',
-    gap: 12,
     flexWrap: 'wrap',
+    gap: 12,
   },
   contactItem: {
-    fontSize: 8,
+    fontSize: 8.5,
     color: COLORS.textSecondary,
+    fontWeight: 500,
+  },
+  contactLink: {
+    fontSize: 8.5,
+    color: COLORS.primaryLight,
+    textDecoration: 'none',
+    fontWeight: 500,
   },
   contactSeparator: {
-    fontSize: 8,
     color: COLORS.border,
+    fontSize: 9,
   },
-  // Sections
+
+  // Global Section Styles
   section: {
-    marginBottom: 14,
+    marginBottom: 16,
+  },
+  sectionTitleBox: {
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    paddingBottom: 4,
   },
   sectionTitle: {
     fontFamily: 'PlusJakartaSans',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 700,
     color: COLORS.primary,
-    borderBottom: `1px solid ${COLORS.border}`,
-    paddingBottom: 4,
-    marginBottom: 8,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
+
   // Summary
   summaryText: {
-    fontSize: 9,
+    fontSize: 9.5,
     color: COLORS.textSecondary,
     lineHeight: 1.6,
+    textAlign: 'justify',
   },
+
   // Skills
-  skillCategory: {
-    marginBottom: 6,
+  skillsContainer: {
+    flexDirection: 'column',
+    gap: 8,
   },
-  skillCategoryName: {
+  skillRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  skillCategoryTitle: {
+    width: '25%',
     fontSize: 9,
-    fontWeight: 600,
+    fontWeight: 700,
     color: COLORS.text,
-    marginBottom: 2,
+    paddingTop: 2,
   },
-  skillItems: {
+  skillTagsBox: {
+    width: '75%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+  },
+  skillTag: {
+    backgroundColor: COLORS.primaryLighter,
+    color: COLORS.primary,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 4,
     fontSize: 8.5,
-    color: COLORS.textSecondary,
-    lineHeight: 1.5,
+    fontWeight: 600,
   },
+
   // Experience
-  experienceBlock: {
-    marginBottom: 10,
+  expItem: {
+    marginBottom: 14,
   },
-  expHeader: {
+  expHeaderContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 3,
+    marginBottom: 4,
   },
   expTitle: {
-    fontSize: 10,
-    fontWeight: 600,
+    fontSize: 11,
+    fontWeight: 700,
     color: COLORS.text,
+    marginBottom: 2,
   },
   expCompany: {
-    fontSize: 9,
+    fontSize: 10,
     color: COLORS.primaryLight,
-    fontWeight: 500,
+    fontWeight: 600,
+  },
+  expMetaBox: {
+    alignItems: 'flex-end',
   },
   expDate: {
-    fontSize: 8,
-    color: COLORS.textLight,
-    textAlign: 'right' as const,
+    fontSize: 9,
+    color: COLORS.textSecondary,
+    fontWeight: 600,
+    marginBottom: 2,
   },
   expLocation: {
-    fontSize: 8,
+    fontSize: 8.5,
     color: COLORS.textLight,
   },
-  // Mission
-  missionBlock: {
-    marginBottom: 6,
-    marginLeft: 8,
-    paddingLeft: 8,
-    borderLeft: `1.5px solid ${COLORS.accent}`,
+  missionBox: {
+    marginLeft: 6,
+    paddingLeft: 10,
+    borderLeftWidth: 1,
+    borderLeftColor: COLORS.border,
+    marginTop: 6,
+    marginBottom: 8,
   },
   missionClient: {
-    fontSize: 9,
-    fontWeight: 600,
+    fontSize: 9.5,
+    fontWeight: 700,
     color: COLORS.textSecondary,
-    marginBottom: 3,
+    marginBottom: 4,
   },
-  bullet: {
+  bulletRow: {
     flexDirection: 'row',
-    marginBottom: 2,
-    paddingRight: 4,
+    marginBottom: 3,
+    alignItems: 'flex-start',
   },
   bulletDot: {
-    fontSize: 8,
+    width: 10,
+    fontSize: 10,
     color: COLORS.primaryLight,
-    marginRight: 6,
-    marginTop: 1,
+    lineHeight: 1.4,
   },
   bulletText: {
-    fontSize: 8.5,
+    flex: 1,
+    fontSize: 9,
     color: COLORS.textSecondary,
     lineHeight: 1.5,
-    flex: 1,
+    paddingRight: 10,
   },
-  // Education
-  eduBlock: {
-    marginBottom: 6,
+
+  // Education & Certifications
+  gridList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  eduItem: {
+    width: '100%',
+    marginBottom: 8,
   },
   eduHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 2,
   },
-  eduDegree: {
-    fontSize: 9.5,
-    fontWeight: 600,
+  eduTitle: {
+    fontSize: 10,
+    fontWeight: 700,
     color: COLORS.text,
-  },
-  eduSchool: {
-    fontSize: 8.5,
-    color: COLORS.textSecondary,
   },
   eduDate: {
-    fontSize: 8,
+    fontSize: 8.5,
     color: COLORS.textLight,
+    fontWeight: 600,
+  },
+  eduSchool: {
+    fontSize: 9,
+    color: COLORS.primaryLight,
+    fontWeight: 500,
   },
   eduDetails: {
+    fontSize: 8.5,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+    lineHeight: 1.4,
+  },
+
+  certBox: {
+    width: '48%', // Half column grid
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 6,
+    padding: 8,
+    marginBottom: 4,
+  },
+  certTitle: {
+    fontSize: 9,
+    fontWeight: 700,
+    color: COLORS.text,
+    marginBottom: 2,
+  },
+  certMeta: {
     fontSize: 8,
     color: COLORS.textLight,
-    fontStyle: 'italic' as const,
-    marginTop: 1,
   },
-  // Certifications
-  certGrid: {
+
+  // Languages & Interests
+  simpleRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-  },
-  certItem: {
-    fontSize: 8,
-    color: COLORS.textSecondary,
-    backgroundColor: COLORS.accent,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 4,
-  },
-  // Languages
-  langRow: {
-    flexDirection: 'row',
-    gap: 20,
-  },
-  langItem: {
-    flexDirection: 'row',
-    gap: 4,
+    alignItems: 'center',
+    marginBottom: 4,
   },
   langName: {
-    fontSize: 9,
-    fontWeight: 600,
+    fontSize: 9.5,
+    fontWeight: 700,
     color: COLORS.text,
+    width: 80,
   },
   langLevel: {
-    fontSize: 9,
-    color: COLORS.textSecondary,
-  },
-  // Interests
-  interestsText: {
-    fontSize: 8.5,
+    fontSize: 9.5,
     color: COLORS.textSecondary,
   },
 })
@@ -268,66 +323,85 @@ export function CVDocument({
     }
   }
 
-  const contactParts = [
-    profile.email,
-    profile.phone,
-    profile.location,
-    profile.linkedin,
-    profile.website,
-  ].filter(Boolean)
-
   return (
     <Document>
-      <Page size="A4" style={styles.page} wrap>
-        {/* Header */}
-        <View style={styles.header} fixed={false}>
+      <Page size="A4" style={styles.page}>
+        
+        {/* HEADER */}
+        <View style={styles.headerContainer}>
           <Text style={styles.name}>{profile.fullName}</Text>
           <Text style={styles.title}>{profile.title}</Text>
-          <View style={styles.contactRow}>
-            {contactParts.map((item, i) => (
-              <View key={i} style={{ flexDirection: 'row' as const }}>
-                <Text style={styles.contactItem}>{item}</Text>
-                {i < contactParts.length - 1 && (
-                  <Text style={styles.contactSeparator}>  |  </Text>
-                )}
-              </View>
-            ))}
+          <View style={styles.contactGrid}>
+            {profile.location && <Text style={styles.contactItem}>{profile.location}</Text>}
+            {profile.location && <Text style={styles.contactSeparator}>•</Text>}
+            {profile.phone && <Text style={styles.contactItem}>{profile.phone}</Text>}
+            {profile.phone && <Text style={styles.contactSeparator}>•</Text>}
+            {profile.email && <Text style={styles.contactItem}>{profile.email}</Text>}
+            {profile.email && <Text style={styles.contactSeparator}>•</Text>}
+            {profile.linkedin && (
+              <Link src={profile.linkedin} style={styles.contactLink}>LinkedIn</Link>
+            )}
+            {profile.website && (
+              <>
+                <Text style={styles.contactSeparator}>•</Text>
+                <Link src={profile.website} style={styles.contactLink}>Portfolio</Link>
+              </>
+            )}
           </View>
         </View>
 
-        {/* À propos */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>À propos</Text>
-          <Text style={styles.summaryText}>{summary}</Text>
-        </View>
-
-        {/* Compétences */}
-        {skills.length > 0 && (
+        {/* SUMMARY */}
+        {summary && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Compétences</Text>
-            {skills.map((skill, i) => (
-              <View key={i} style={styles.skillCategory}>
-                <Text style={styles.skillCategoryName}>{skill.category}</Text>
-                <Text style={styles.skillItems}>{skill.items}</Text>
-              </View>
-            ))}
+            <View style={styles.sectionTitleBox}>
+              <Text style={styles.sectionTitle}>Profil Professionnel</Text>
+            </View>
+            <Text style={styles.summaryText}>{summary}</Text>
           </View>
         )}
 
-        {/* Expérience professionnelle */}
+        {/* SKILLS */}
+        {skills.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionTitleBox}>
+              <Text style={styles.sectionTitle}>Compétences Clés</Text>
+            </View>
+            <View style={styles.skillsContainer}>
+              {skills.map((skill, i) => {
+                // Split comma separated items for tags
+                const tags = skill.items.split(',').map(s => s.trim()).filter(Boolean)
+                return (
+                  <View key={i} style={styles.skillRow} wrap={false}>
+                    <Text style={styles.skillCategoryTitle}>{skill.category}</Text>
+                    <View style={styles.skillTagsBox}>
+                      {tags.map((tag, j) => (
+                        <Text key={j} style={styles.skillTag}>{tag}</Text>
+                      ))}
+                    </View>
+                  </View>
+                )
+              })}
+            </View>
+          </View>
+        )}
+
+        {/* EXPERIENCES */}
         {profile.experiences.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Expérience professionnelle</Text>
+            <View style={styles.sectionTitleBox}>
+              <Text style={styles.sectionTitle}>Expérience Professionnelle</Text>
+            </View>
+            
             {profile.experiences.map((exp) => (
-              <View key={exp.id} style={styles.experienceBlock} wrap={false}>
-                <View style={styles.expHeader}>
-                  <View>
+              <View key={exp.id} style={styles.expItem}>
+                <View style={styles.expHeaderContent} wrap={false}>
+                  <View style={{ flex: 1, paddingRight: 15 }}>
                     <Text style={styles.expTitle}>{exp.jobTitle}</Text>
                     <Text style={styles.expCompany}>{exp.company}</Text>
                   </View>
-                  <View>
+                  <View style={styles.expMetaBox}>
                     <Text style={styles.expDate}>
-                      {exp.startDate} — {exp.endDate || "Aujourd'hui"}
+                      {exp.startDate} – {exp.endDate || "Présent"}
                     </Text>
                     <Text style={styles.expLocation}>{exp.location}</Text>
                   </View>
@@ -336,13 +410,15 @@ export function CVDocument({
                 {exp.missions.map((mission) => {
                   const bullets = getMissionBullets(mission.id, mission.bullets)
                   return (
-                    <View key={mission.id} style={styles.missionBlock}>
-                      <Text style={styles.missionClient}>
-                        {mission.clientName}
-                        {mission.clientCountry && ` — ${mission.clientCountry}`}
-                      </Text>
+                    <View key={mission.id} style={styles.missionBox}>
+                      {mission.clientName && (
+                        <Text style={styles.missionClient} wrap={false}>
+                          Mission : {mission.clientName}
+                          {mission.clientCountry && ` (${mission.clientCountry})`}
+                        </Text>
+                      )}
                       {bullets.map((bullet, bi) => (
-                        <View key={bi} style={styles.bullet}>
+                        <View key={bi} style={styles.bulletRow} wrap={false}>
                           <Text style={styles.bulletDot}>•</Text>
                           <Text style={styles.bulletText}>{bullet}</Text>
                         </View>
@@ -355,59 +431,67 @@ export function CVDocument({
           </View>
         )}
 
-        {/* Formation */}
+        {/* EDUCATION */}
         {profile.education.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Formation</Text>
+          <View style={styles.section} wrap={false}>
+            <View style={styles.sectionTitleBox}>
+              <Text style={styles.sectionTitle}>Formation</Text>
+            </View>
             {profile.education.map((edu) => (
-              <View key={edu.id} style={styles.eduBlock}>
+              <View key={edu.id} style={styles.eduItem}>
                 <View style={styles.eduHeader}>
-                  <View>
-                    <Text style={styles.eduDegree}>{edu.degree}</Text>
-                    <Text style={styles.eduSchool}>{edu.school} — {edu.location}</Text>
-                  </View>
+                  <Text style={styles.eduTitle}>{edu.degree}</Text>
                   <Text style={styles.eduDate}>{edu.date}</Text>
                 </View>
+                <Text style={styles.eduSchool}>{edu.school} – {edu.location}</Text>
                 {edu.details && <Text style={styles.eduDetails}>{edu.details}</Text>}
               </View>
             ))}
           </View>
         )}
 
-        {/* Certifications */}
+        {/* CERTIFICATIONS */}
         {profile.certifications.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Certifications</Text>
-            <View style={styles.certGrid}>
-              {profile.certifications.map((cert) => (
-                <Text key={cert.id} style={styles.certItem}>
-                  {cert.name} ({cert.issuer}, {cert.date})
-                </Text>
-              ))}
+          <View style={styles.section} wrap={false}>
+            <View style={styles.sectionTitleBox}>
+              <Text style={styles.sectionTitle}>Certifications & Licences</Text>
             </View>
-          </View>
-        )}
-
-        {/* Langues */}
-        {profile.languages.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Langues</Text>
-            <View style={styles.langRow}>
-              {profile.languages.map((lang) => (
-                <View key={lang.id} style={styles.langItem}>
-                  <Text style={styles.langName}>{lang.name} :</Text>
-                  <Text style={styles.langLevel}>{lang.level}</Text>
+            <View style={styles.gridList}>
+              {profile.certifications.map((cert) => (
+                <View key={cert.id} style={styles.certBox}>
+                  <Text style={styles.certTitle}>{cert.name}</Text>
+                  <Text style={styles.certMeta}>{cert.issuer} • {cert.date}</Text>
                 </View>
               ))}
             </View>
           </View>
         )}
 
-        {/* Centres d'intérêt */}
-        {profile.interests && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Centres d&apos;intérêt</Text>
-            <Text style={styles.interestsText}>{profile.interests}</Text>
+        {/* LANGUAGES & INTERESTS */}
+        {(profile.languages.length > 0 || profile.interests) && (
+          <View style={{ flexDirection: 'row', gap: 20 }} wrap={false}>
+            {profile.languages.length > 0 && (
+              <View style={{ flex: 1 }}>
+                <View style={styles.sectionTitleBox}>
+                  <Text style={styles.sectionTitle}>Langues</Text>
+                </View>
+                {profile.languages.map((lang) => (
+                  <View key={lang.id} style={styles.simpleRow}>
+                    <Text style={styles.langName}>{lang.name}</Text>
+                    <Text style={styles.langLevel}>{lang.level}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {profile.interests && (
+              <View style={{ flex: 1 }}>
+                <View style={styles.sectionTitleBox}>
+                  <Text style={styles.sectionTitle}>Centres d'intérêt</Text>
+                </View>
+                <Text style={styles.summaryText}>{profile.interests}</Text>
+              </View>
+            )}
           </View>
         )}
       </Page>

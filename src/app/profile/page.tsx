@@ -1,9 +1,11 @@
 import { prisma } from '@/lib/prisma'
-import { ProfileForm } from '@/components/forms/ProfileForm'
+import { ProfileManager } from '@/components/profile/ProfileManager'
 import { redirect } from 'next/navigation'
+import type { ProfileWithRelations } from '@/types'
 
 export default async function ProfilePage() {
-  const profile = await prisma.profile.findFirst({
+  const profiles = await prisma.profile.findMany({
+    orderBy: { createdAt: 'asc' },
     include: {
       skills: { orderBy: { order: 'asc' } },
       experiences: {
@@ -18,25 +20,28 @@ export default async function ProfilePage() {
     },
   })
 
-  if (!profile) {
+  // Cast to ProfileWithRelations since Prisma generated types map identically to it
+  const typedProfiles = profiles as unknown as ProfileWithRelations[]
+
+  if (typedProfiles.length === 0) {
     redirect('/')
   }
 
   return (
-    <div className="max-w-4xl animate-fade-in">
-      <div className="mb-6">
+    <div className="w-full animate-fade-in relative max-w-none">
+      <div className="mb-4">
         <h1
-          className="text-2xl font-bold text-[var(--color-neutral-800)]"
+          className="text-2xl font-bold text-slate-900 tracking-tight"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
-          Mon Profil
+          Mes Bibliothèques de CV
         </h1>
-        <p className="text-[var(--color-neutral-500)] mt-1">
-          Gérez vos informations de base utilisées pour générer les CV
+        <p className="text-slate-500 mt-1 max-w-2xl text-sm">
+          Naviguez entre vos différents profils de base, modifiez-les, et visualisez instantanément le rendu PDF.
         </p>
       </div>
 
-      <ProfileForm profile={profile} />
+      <ProfileManager profiles={typedProfiles} />
     </div>
   )
 }

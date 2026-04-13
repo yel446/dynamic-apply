@@ -7,22 +7,17 @@ import { cn } from '@/lib/utils'
 
 const navItems = [
   {
-    label: 'Dashboard',
+    label: 'Tableau de bord',
     href: '/',
     icon: LayoutDashboard,
   },
   {
-    label: 'Search jobs',
-    href: '/applications/new',
-    icon: Plus,
-  },
-  {
-    label: 'My profile',
+    label: 'Mon Profil',
     href: '/profile',
     icon: User,
   },
   {
-    label: 'My applications',
+    label: 'Mes Candidatures',
     href: '/applications',
     icon: FileText,
   },

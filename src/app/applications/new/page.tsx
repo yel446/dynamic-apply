@@ -31,6 +31,7 @@ export default function NewApplicationPage() {
 
   // Analysis results
   const [analysis, setAnalysis] = useState<{
+    recommendedProfileId?: string
     keywords?: string[]
     requiredSkills?: string[]
     experienceLevel?: string
@@ -83,7 +84,11 @@ export default function NewApplicationPage() {
       const res = await fetch('/api/adapt-cv', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobDescription, jobAnalysis: analysis }),
+        body: JSON.stringify({ 
+          jobDescription, 
+          jobAnalysis: analysis,
+          profileId: analysis?.recommendedProfileId
+        }),
       })
       if (!res.ok) throw new Error('Erreur API')
       const data = await res.json()
@@ -141,6 +146,7 @@ export default function NewApplicationPage() {
           jobUrl,
           jobDescription,
           status,
+          baseProfileId: analysis?.recommendedProfileId,
           adaptedSummary: adaptedCV?.adaptedSummary,
           adaptedSkills: JSON.stringify(adaptedCV?.adaptedSkills),
           adaptedBullets: JSON.stringify(adaptedCV?.adaptedBullets),
