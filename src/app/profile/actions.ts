@@ -17,6 +17,8 @@ export async function updateProfile(formData: FormData) {
       website: (formData.get('website') as string) || null,
       linkedin: (formData.get('linkedin') as string) || null,
       summary: formData.get('summary') as string,
+      motto: (formData.get('motto') as string) || null,
+      photo: (formData.get('photo') as string) || null,
       interests: (formData.get('interests') as string) || null,
     },
   })

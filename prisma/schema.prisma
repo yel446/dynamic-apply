@@ -13,6 +13,8 @@ model Profile {
   isDefault Boolean  @default(false)
   fullName  String
   title     String   // ex: "Digital Product Manager"
+  photo     String?  // URL de l'image
+  motto     String?  // Phrase d'accroche
   email     String
   phone     String
   location  String

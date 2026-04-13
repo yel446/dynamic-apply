@@ -11,6 +11,8 @@ export interface ProfileWithRelations {
   isDefault: boolean
   fullName: string
   title: string
+  photo: string | null
+  motto: string | null
   email: string
   phone: string
   location: string

@@ -19,6 +19,8 @@ interface ProfileFormProps {
     location: string
     website: string | null
     linkedin: string | null
+    photo: string | null
+    motto: string | null
     summary: string
     interests: string | null
     skills: { id: string; category: string; items: string; order: number }[]
@@ -133,12 +135,20 @@ export function ProfileForm({ profile }: ProfileFormProps) {
             <Input label="LinkedIn" name="linkedin" defaultValue={profile.linkedin || ''} className="md:col-span-2" />
           </div>
           <Textarea
+            label="Phrase d'accroche (Motto)"
+            name="motto"
+            defaultValue={profile.motto || ''}
+            className="min-h-[60px]"
+            placeholder="ex: Résilient face aux défis, créatif dans les solutions..."
+          />
+          <Textarea
             label="Résumé / À propos"
             name="summary"
             defaultValue={profile.summary}
             className="min-h-[120px]"
             required
           />
+          <Input label="URL Photo de profil" name="photo" defaultValue={profile.photo || ''} placeholder="https://..." />
           <div className="flex justify-end">
             <Button type="submit" size="sm" isLoading={saving === 'profile'}>
               <Save className="w-3.5 h-3.5" />
