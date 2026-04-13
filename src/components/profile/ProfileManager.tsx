@@ -59,7 +59,7 @@ export function ProfileManager({ profiles }: ProfileManagerProps) {
           <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3">
             {/* Mobile/Tablet Only: Floating Preview Button so they don't miss the PDF access */}
             <div className="block xl:hidden w-full sm:w-auto">
-              <CVPreviewButton profile={selectedProfile} fileName={`CV_${selectedProfile.name.replace(/\s+/g, '_')}.pdf`} />
+              <CVPreviewButton profile={selectedProfile} fileName={`CV_${(selectedProfile.name || 'Profil').replace(/\s+/g, '_')}.pdf`} />
             </div>
             {/* Future: Duplicate Profile feature could go here */}
             <button className="w-full sm:w-auto bg-slate-900 text-white rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2">

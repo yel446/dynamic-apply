@@ -1,27 +1,12 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { Download, Eye, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
+import { CVDocument } from './CVDocument'
 import type { ProfileWithRelations } from '@/types'
-
-// Dynamic import to prevent SSR issues with react-pdf
-const PDFViewer = dynamic(
-  () => import('@react-pdf/renderer').then(mod => mod.PDFViewer),
-  { ssr: false, loading: () => <div className="flex items-center justify-center h-full"><p className="text-sm text-[var(--color-neutral-400)]">Chargement du PDF...</p></div> }
-)
-
-const PDFDownloadLink = dynamic(
-  () => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink),
-  { ssr: false }
-)
-
-const CVDocumentComponent = dynamic(
-  () => import('./CVDocument').then(mod => ({ default: mod.CVDocument })),
-  { ssr: false }
-)
 
 interface CVPreviewProps {
   profile: ProfileWithRelations
@@ -52,7 +37,7 @@ export function CVPreviewButton({ profile, adaptedSummary, adaptedSkills, adapte
         <div className="flex flex-col h-[75vh]">
           <div className="flex-1 rounded-lg overflow-hidden border border-[var(--color-neutral-200)]">
             <PDFViewer width="100%" height="100%" showToolbar={false}>
-              <CVDocumentComponent
+              <CVDocument
                 profile={profile}
                 adaptedSummary={adaptedSummary}
                 adaptedSkills={adaptedSkills}
@@ -66,7 +51,7 @@ export function CVPreviewButton({ profile, adaptedSummary, adaptedSkills, adapte
             </Button>
             <PDFDownloadLink
               document={
-                <CVDocumentComponent
+                <CVDocument
                   profile={profile}
                   adaptedSummary={adaptedSummary}
                   adaptedSkills={adaptedSkills}
