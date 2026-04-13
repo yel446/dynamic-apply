@@ -23,7 +23,7 @@ export default function RootLayout({
       lang="fr"
       className={`${plusJakartaSans.variable} ${inter.variable} h-full`}
     >
-      <body className="min-h-full flex bg-[#F4F7FB]">
+      <body className="min-h-full flex bg-[#F4F7FB]" suppressHydrationWarning>
         <Sidebar />
         <div className="flex-1 flex flex-col relative" style={{ marginLeft: 'var(--sidebar-width)' }}>
           <Header />
