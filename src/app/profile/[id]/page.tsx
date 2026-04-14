@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import type { ProfileWithRelations } from '@/types'
 import Link from 'next/link'
 import { ArrowLeft, ChevronLeft, Trash2 } from 'lucide-react'
-import { deleteProfile } from '@/app/profile/actions'
+import { DeleteProfileButton } from '@/components/profile/DeleteProfileButton'
 import { CVPreviewButton, CVLivePreview } from '@/components/cv/CVDynamic'
 
 export default async function ProfileEditorPage({
@@ -60,23 +60,7 @@ export default async function ProfileEditorPage({
         </div>
 
         <div className="flex items-center gap-3">
-           <form action={async () => {
-             'use server'
-             await deleteProfile(id)
-           }}>
-             <button 
-               type="submit"
-               className="p-3 rounded-2xl border border-slate-100 text-slate-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all shadow-sm"
-               title="Supprimer ce profil"
-               onClick={(e) => {
-                 if (!confirm("Êtes-vous sûr de vouloir supprimer ce profil ?")) {
-                   e.preventDefault()
-                 }
-               }}
-             >
-               <Trash2 className="w-5 h-5" />
-             </button>
-           </form>
+           <DeleteProfileButton id={id} />
 
            <CVPreviewButton 
              profile={typedProfile} 

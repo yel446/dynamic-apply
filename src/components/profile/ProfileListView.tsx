@@ -1,3 +1,5 @@
+'use client'
+
 import { LayoutTemplate, MapPin, CheckCircle2, ChevronRight, FileText, Settings2, Trash2, Copy, Plus, MoreVertical, X } from 'lucide-react'
 import type { ProfileWithRelations } from '@/types'
 import Link from 'next/link'
