@@ -45,6 +45,15 @@ export function ProfileListView({ profiles }: ProfileListViewProps) {
               <div className="bg-blue-50 p-3 rounded-2xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                 <LayoutTemplate className="w-6 h-6" />
               </div>
+              
+              {/* Direct Delete Action */}
+              <button
+                onClick={(e) => handleDelete(e, profile.id, profile.name)}
+                className="p-2 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+                title="Supprimer ce profil"
+              >
+                <Trash2 className="w-4.5 h-4.5" />
+              </button>
             </div>
 
             <div className="mb-6">

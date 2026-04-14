@@ -281,10 +281,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         </div>
       </AccordionSection>
 
-      {/* Centres d'intérêt */}
-      {profile.interests && (
-        </AccordionSection>
-      )}
+
 
       {/* Sections Personnalisées */}
       <AccordionSection title="Rubriques personnalisées" icon={Sparkles}>
