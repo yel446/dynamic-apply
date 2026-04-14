@@ -4,18 +4,8 @@ import { notFound } from 'next/navigation'
 import type { ProfileWithRelations } from '@/types'
 import Link from 'next/link'
 import { ArrowLeft, ChevronLeft, Trash2 } from 'lucide-react'
-import dynamic from 'next/dynamic'
 import { deleteProfile } from '@/app/profile/actions'
-
-const CVPreviewButton = dynamic(
-  () => import('@/components/cv/CVPreview').then(mod => mod.CVPreviewButton),
-  { ssr: false }
-)
-
-const CVLivePreview = dynamic(
-  () => import('@/components/cv/CVLivePreview').then(mod => mod.CVLivePreview),
-  { ssr: false }
-)
+import { CVPreviewButton, CVLivePreview } from '@/components/cv/CVDynamic'
 
 export default async function ProfileEditorPage({
   params,
