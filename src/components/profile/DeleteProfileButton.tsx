@@ -49,7 +49,7 @@ export function DeleteProfileButton({ id }: DeleteProfileButtonProps) {
       className="flex items-center justify-center w-12 h-12 rounded-2xl border border-slate-100 bg-white text-slate-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 hover:shadow-lg transition-all shadow-sm cursor-pointer"
       title="Supprimer ce profil"
     >
-      <Trash2 className="w-6 h-6" />
+      <Trash2 className="w-6 h-6 pointer-events-none" />
     </button>
   )
 }

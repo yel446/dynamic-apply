@@ -22,8 +22,13 @@ export function CVPreviewButton({ profile, adaptedSummary, adaptedSkills, adapte
 
   return (
     <>
-      <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
-        <Eye className="w-3.5 h-3.5" />
+      <Button 
+        variant="secondary" 
+        size="sm" 
+        onClick={() => setOpen(true)}
+        className="!bg-slate-900 !text-white !rounded-2xl !px-6 !py-3 !text-sm !font-bold hover:!bg-slate-800 transition-all shadow-xl shadow-slate-200 group"
+      >
+        <Eye className="w-3.5 h-3.5 pointer-events-none group-hover:scale-110 transition-transform" />
         Prévisualiser le CV
       </Button>
 

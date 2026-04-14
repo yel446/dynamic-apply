@@ -29,7 +29,7 @@ export function BackButton({ href, className }: BackButtonProps) {
       )}
       aria-label="Retour"
     >
-      <ChevronLeft className="w-6 h-6" />
+      <ChevronLeft className="w-6 h-6 pointer-events-none" />
     </button>
   )
 }

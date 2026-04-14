@@ -220,3 +220,111 @@ export async function deleteMission(missionId: string, profileId: string) {
   await prisma.mission.delete({ where: { id: missionId } })
   revalidatePath(`/profile/${profileId}`)
 }
+
+// --- NEW CRUD ACTIONS ---
+
+export async function addExperience(profileId: string) {
+  const maxOrder = await prisma.experience.aggregate({
+    where: { profileId },
+    _max: { order: true },
+  })
+
+  await prisma.experience.create({
+    data: {
+      profileId,
+      jobTitle: 'Nouveau Poste',
+      company: 'Entreprise',
+      location: 'Lieu',
+      startDate: '2024',
+      order: (maxOrder._max.order ?? -1) + 1,
+    },
+  })
+
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function deleteExperience(id: string, profileId: string) {
+  await prisma.experience.delete({ where: { id } })
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function addEducation(profileId: string) {
+  const maxOrder = await prisma.education.aggregate({
+    where: { profileId },
+    _max: { order: true },
+  })
+
+  await prisma.education.create({
+    data: {
+      profileId,
+      degree: 'Nouveau Diplôme',
+      school: 'École',
+      location: 'Lieu',
+      date: '2024',
+      order: (maxOrder._max.order ?? -1) + 1,
+    },
+  })
+
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function deleteEducation(id: string, profileId: string) {
+  await prisma.education.delete({ where: { id } })
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function addCertification(profileId: string) {
+  const maxOrder = await prisma.certification.aggregate({
+    where: { profileId },
+    _max: { order: true },
+  })
+
+  await prisma.certification.create({
+    data: {
+      profileId,
+      name: 'Nouvelle Certification',
+      issuer: 'Organisme',
+      date: '2024',
+      order: (maxOrder._max.order ?? -1) + 1,
+    },
+  })
+
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function deleteCertification(id: string, profileId: string) {
+  await prisma.certification.delete({ where: { id } })
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function addLanguage(profileId: string) {
+  await prisma.language.create({
+    data: {
+      profileId,
+      name: 'Nouvelle Langue',
+      level: 'Courant',
+    },
+  })
+
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function updateLanguage(formData: FormData) {
+  const languageId = formData.get('languageId') as string
+  const profileId = formData.get('profileId') as string
+
+  await prisma.language.update({
+    where: { id: languageId },
+    data: {
+      name: formData.get('name') as string,
+      level: formData.get('level') as string,
+    },
+  })
+
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function deleteLanguage(id: string, profileId: string) {
+  await prisma.language.delete({ where: { id } })
+  revalidatePath(`/profile/${profileId}`)
+}
