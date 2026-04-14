@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { User, Briefcase, GraduationCap, Award, Globe, Heart, ChevronDown, ChevronUp, Save, Eye, Pencil, Plus, Trash2, Layout, Sparkles } from 'lucide-react'
+import { User, Briefcase, GraduationCap, Award, Globe, Heart, ChevronDown, ChevronUp, Save, Eye, Pencil, Plus, Trash2, Layout, Sparkles, Camera, X } from 'lucide-react'
+import { compressImage } from '@/lib/image-utils'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
@@ -10,15 +11,20 @@ import {
   updateProfile, 
   updateSkill, 
   updateExperience, 
-  updateMissionBullets, 
+  updateMission, 
   updateEducation, 
   updateCertification,
   addSection,
   updateSection,
   deleteSection,
   addSkill,
-  deleteSkill
+  deleteSkill,
+  addMission,
+  deleteMission
 } from '@/app/profile/actions'
+import { SectionModal } from '@/components/profile/SectionModal'
+import { RichTextEditor } from '@/components/ui/RichTextEditor'
+import * as Icons from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ProfileWithRelations } from '@/types'
 
@@ -40,25 +46,29 @@ function AccordionSection({
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden border-slate-100 shadow-sm hover:shadow-md transition-shadow">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 hover:bg-[var(--color-neutral-50)] transition-colors"
+        className="w-full h-[70px] flex items-center justify-between px-6 hover:bg-slate-50/50 transition-all group"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-[var(--color-primary-lighter)] flex items-center justify-center">
-            <Icon className="w-[18px] h-[18px] text-[var(--color-primary-light)]" />
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Icon className="w-5 h-5 text-white" />
           </div>
-          <h3 className="text-sm font-bold text-[var(--color-neutral-800)]" style={{ fontFamily: 'var(--font-heading)' }}>
-            {title}
-          </h3>
+          <div className="text-left">
+            <h3 className="text-[15px] font-bold text-slate-900">
+              {title}
+            </h3>
+            <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Configuration</p>
+          </div>
         </div>
-        {isOpen ? (
-          <ChevronUp className="w-4 h-4 text-[var(--color-neutral-400)]" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-[var(--color-neutral-400)]" />
-        )}
+        <div className={cn(
+          "w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all",
+          isOpen && "bg-blue-600 text-white rotate-180"
+        )}>
+          <ChevronDown className="w-4 h-4" />
+        </div>
       </button>
       {isOpen && (
         <div className="px-5 pb-5 border-t border-[var(--color-neutral-100)] pt-4 animate-fade-in">
@@ -71,6 +81,25 @@ function AccordionSection({
 
 export function ProfileForm({ profile }: ProfileFormProps) {
   const [saving, setSaving] = useState<string | null>(null)
+  const [photo, setPhoto] = useState<string | null>(profile.photo || null)
+  const [isCompressing, setIsCompressing] = useState(false)
+  const [editingSection, setEditingSection] = useState<any>(null)
+  const [isSectionModalOpen, setIsSectionModalOpen] = useState(false)
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsCompressing(true)
+    try {
+      const compressed = await compressImage(file)
+      setPhoto(compressed)
+    } catch (err) {
+      console.error("Erreur compression photo:", err)
+    } finally {
+      setIsCompressing(false)
+    }
+  }
 
   async function handleSaveProfile(formData: FormData) {
     setSaving('profile')
@@ -129,7 +158,48 @@ export function ProfileForm({ profile }: ProfileFormProps) {
             className="min-h-[120px]"
             required
           />
-          <Input label="URL Photo de profil" name="photo" defaultValue={profile.photo || ''} placeholder="https://..." />
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Photo de profil</label>
+            <div className="flex items-center gap-6 p-4 rounded-2xl bg-slate-50/50 border border-slate-100 border-dashed">
+              <div className="relative group/photo">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-white border-2 border-white shadow-md">
+                   {photo ? (
+                     <img src={photo} alt="Profil" className="w-full h-full object-cover" />
+                   ) : (
+                     <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">
+                       <User className="w-10 h-10" />
+                     </div>
+                   )}
+                </div>
+                {photo && (
+                  <button 
+                    type="button"
+                    onClick={() => setPhoto(null)}
+                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 shadow-lg opacity-0 group-hover/photo:opacity-100 transition-opacity"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex-1">
+                <label className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:border-blue-500 hover:text-blue-600 transition-all cursor-pointer shadow-sm">
+                   <Camera className="w-4 h-4" />
+                   {isCompressing ? "Traitement..." : "Changer la photo"}
+                   <input 
+                     type="file" 
+                     className="hidden" 
+                     accept="image/*" 
+                     onChange={handlePhotoUpload}
+                     disabled={isCompressing}
+                   />
+                </label>
+                <p className="text-[10px] text-slate-400 mt-2">Format recommandé: carré, max 1Mo. La photo sera automatiquement optimisée.</p>
+              </div>
+            </div>
+            <input type="hidden" name="photo" value={photo || ''} />
+          </div>
+
           <div className="flex justify-end">
             <Button type="submit" size="sm" isLoading={saving === 'profile'}>
               <Save className="w-3.5 h-3.5" />
@@ -194,27 +264,25 @@ export function ProfileForm({ profile }: ProfileFormProps) {
               </form>
 
               {/* Missions */}
-              {exp.missions.map((mission) => {
-                const bullets: string[] = JSON.parse(mission.bullets)
-                return (
-                  <div key={mission.id} className="ml-4 pl-4 border-l-2 border-[var(--color-primary-lighter)] space-y-2">
-                    <p className="text-sm font-semibold text-[var(--color-neutral-700)]">
-                      📍 {mission.clientName}
-                      {mission.clientCountry && (
-                        <span className="text-[var(--color-neutral-400)] font-normal"> — {mission.clientCountry}</span>
-                      )}
-                    </p>
-                    <ul className="space-y-1.5">
-                      {bullets.map((bullet, i) => (
-                        <li key={i} className="text-xs text-[var(--color-neutral-600)] leading-relaxed flex gap-2">
-                          <span className="text-[var(--color-primary-light)] mt-0.5 flex-shrink-0">•</span>
-                          <span>{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              })}
+              <div className="space-y-4 pt-2">
+                {exp.missions.map((mission) => (
+                  <MissionEditor key={mission.id} mission={mission} profileId={profile.id} />
+                ))}
+                
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const fd = new FormData()
+                    fd.append('experienceId', exp.id)
+                    fd.append('profileId', profile.id)
+                    await addMission(fd)
+                  }}
+                  className="ml-4 flex items-center gap-2 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  Ajouter une mission / projet
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -285,65 +353,195 @@ export function ProfileForm({ profile }: ProfileFormProps) {
 
       {/* Sections Personnalisées */}
       <AccordionSection title="Rubriques personnalisées" icon={Sparkles}>
-        <div className="space-y-6">
-          {profile.customSections.map((section) => (
-            <form
-              key={section.id}
-              action={updateSection}
-              className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-4"
-            >
-              <input type="hidden" name="sectionId" value={section.id} />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input label="Titre de la rubrique" name="title" defaultValue={section.title} required />
-                <Input label="Icône (ex: Award, Star, List)" name="icon" defaultValue={section.icon || ''} placeholder="Award" />
-              </div>
-              <Textarea
-                label="Contenu"
-                name="content"
-                defaultValue={section.content}
-                className="min-h-[100px]"
-                required
-              />
-              <div className="flex justify-between items-center pt-2">
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {profile.customSections.map((section) => {
+              const SectionIcon = (Icons as any)[section.icon || 'Sparkles'] || Sparkles
+              return (
                 <button
-                  type="button"
-                  onClick={() => deleteSection(section.id, profile.id)}
-                  className="text-xs text-red-500 hover:text-red-700 font-semibold flex items-center gap-1.5"
+                  key={section.id}
+                  onClick={() => {
+                    setEditingSection(section)
+                    setIsSectionModalOpen(true)
+                  }}
+                  className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-blue-500 hover:shadow-lg transition-all text-left group"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  Supprimer la rubrique
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <SectionIcon className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-slate-900 truncate">{section.title}</h4>
+                    <p className="text-xs text-slate-400 mt-0.5 truncate">{section.content.replace(/<[^>]*>/g, '')}</p>
+                  </div>
                 </button>
-                <Button type="submit" size="sm" variant="secondary" isLoading={saving === `section-${section.id}`}>
-                  <Save className="w-3.5 h-3.5" />
-                  Mettre à jour
-                </Button>
-              </div>
-            </form>
-          ))}
+              )
+            })}
 
-          {/* New Section Form */}
-          <form
-            action={addSection}
-            className="p-6 rounded-2xl border-2 border-dashed border-slate-200 bg-white/50 space-y-4"
-          >
-            <input type="hidden" name="profileId" value={profile.id} />
-            <div className="flex items-center gap-2 mb-2">
-              <Plus className="w-4 h-4 text-blue-500" />
-              <h4 className="text-sm font-bold text-slate-700">Nouvelle rubrique personnalisée</h4>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input label="Titre" name="title" placeholder="Ex: Projets, Logiciels, etc." required />
-              <Input label="Icône" name="icon" placeholder="Star" />
-            </div>
-            <Textarea label="Contenu" name="content" placeholder="Détails de la rubrique..." required />
-            <div className="flex justify-end">
-              <Button type="submit" size="sm" variant="primary">
-                Ajouter la rubrique
-              </Button>
-            </div>
-          </form>
+            <button
+              onClick={() => {
+                setEditingSection(null)
+                setIsSectionModalOpen(true)
+              }}
+              className="flex items-center gap-4 p-4 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/30 hover:border-blue-400 hover:bg-blue-50/50 transition-all text-left group"
+            >
+              <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
+                <Plus className="w-6 h-6" />
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-700">Ajouter une rubrique</h4>
+                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mt-0.5">Personnalisé</p>
+              </div>
+            </button>
+          </div>
         </div>
       </AccordionSection>
+
+      <SectionModal 
+        open={isSectionModalOpen}
+        onOpenChange={setIsSectionModalOpen}
+        isEditing={!!editingSection}
+        initialData={editingSection}
+        onSave={async (data) => {
+          const fd = new FormData()
+          fd.append('title', data.title)
+          fd.append('icon', data.icon)
+          fd.append('content', data.content)
+          fd.append('profileId', profile.id)
+          if (editingSection) {
+            fd.append('sectionId', editingSection.id)
+            await updateSection(fd)
+          } else {
+            await addSection(fd)
+          }
+        }}
+        onDelete={editingSection ? async () => {
+          await deleteSection(editingSection.id, profile.id)
+        } : undefined}
+      />
+    </div>
+  )
+}
+
+function MissionEditor({ mission, profileId }: { mission: any, profileId: string }) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [bullets, setBullets] = useState<string[]>(JSON.parse(mission.bullets))
+  const [clientName, setClientName] = useState(mission.clientName)
+  const [clientCountry, setClientCountry] = useState(mission.clientCountry || '')
+  const [isSaving, setIsSaving] = useState(false)
+
+  const handleSave = async () => {
+    setIsSaving(true)
+    const fd = new FormData()
+    fd.append('missionId', mission.id)
+    fd.append('clientName', clientName)
+    fd.append('clientCountry', clientCountry)
+    fd.append('bullets', JSON.stringify(bullets.filter(b => b.trim() !== '')))
+    fd.append('profileId', profileId)
+    
+    // Server Action update
+    await updateMission(mission.id, clientName, clientCountry || null, bullets.filter(b => b.trim() !== '')) 
+    
+    setIsSaving(false)
+    setIsEditing(false)
+  }
+
+  return (
+    <div className="ml-4 pl-4 border-l-2 border-slate-100 space-y-3 group/mission">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {isEditing ? (
+            <div className="flex items-center gap-2">
+              <input 
+                className="text-sm font-bold bg-white border border-slate-200 rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                placeholder="Client / Projet"
+              />
+              <span className="text-slate-300">—</span>
+              <input 
+                className="text-xs bg-white border border-slate-200 rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                value={clientCountry}
+                onChange={(e) => setClientCountry(e.target.value)}
+                placeholder="Pays"
+              />
+            </div>
+          ) : (
+            <p className="text-[13px] font-bold text-slate-800 flex items-center gap-1.5">
+              <span className="text-blue-500">📍</span>
+              {clientName} 
+              {clientCountry && <span className="text-slate-400 font-medium"> — {clientCountry}</span>}
+            </p>
+          )}
+        </div>
+        
+        <div className="flex items-center gap-2 opacity-0 group-hover/mission:opacity-100 transition-opacity">
+          {isEditing ? (
+            <button 
+              onClick={handleSave} 
+              className="text-[10px] font-bold text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded-full transition-colors shadow-sm" 
+              disabled={isSaving}
+            >
+              {isSaving ? "CHARGEMENT..." : "VALIDER"}
+            </button>
+          ) : (
+            <>
+              <button 
+                type="button"
+                onClick={() => setIsEditing(true)} 
+                className="p-1.5 hover:bg-blue-50 rounded-lg text-slate-400 hover:text-blue-600 transition-all"
+              >
+                <Pencil className="w-3.5 h-3.5" />
+              </button>
+              <button 
+                type="button"
+                onClick={async () => await deleteMission(mission.id, profileId)} 
+                className="p-1.5 hover:bg-red-50 rounded-lg text-slate-300 hover:text-red-500 transition-all"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      <ul className="space-y-2">
+        {bullets.map((bullet, i) => (
+          <li key={i} className="flex gap-2 group/bullet">
+            <span className="text-blue-400 mt-2 flex-shrink-0 text-[10px]">•</span>
+            {isEditing ? (
+              <div className="flex-1 flex items-center gap-2">
+                <input
+                  className="flex-1 text-xs text-slate-600 bg-white border border-slate-100 rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-400 transition-all"
+                  value={bullet}
+                  onChange={(e) => {
+                    const newBullets = [...bullets]
+                    newBullets[i] = e.target.value
+                    setBullets(newBullets)
+                  }}
+                />
+                <button 
+                  type="button"
+                  onClick={() => setBullets(bullets.filter((_, idx) => idx !== i))}
+                  className="opacity-0 group-hover/bullet:opacity-100 p-1.5 text-slate-300 hover:text-red-500 transition-all"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">{bullet}</p>
+            )}
+          </li>
+        ))}
+        {isEditing && (
+          <button 
+            type="button"
+            onClick={() => setBullets([...bullets, ''])}
+            className="text-[10px] font-extrabold text-blue-600 hover:text-blue-800 transition-colors ml-5 py-1 px-2 rounded-lg bg-blue-50/50"
+          >
+            + AJOUTER UNE PUCE
+          </button>
+        )}
+      </ul>
     </div>
   )
 }

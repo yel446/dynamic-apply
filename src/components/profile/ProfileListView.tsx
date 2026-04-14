@@ -9,12 +9,40 @@ interface ProfileListViewProps {
   profiles: ProfileWithRelations[]
 }
 
+import Swal from 'sweetalert2'
+
 export function ProfileListView({ profiles }: ProfileListViewProps) {
   const handleDelete = async (e: React.MouseEvent, id: string, name: string) => {
     e.preventDefault()
     e.stopPropagation()
-    if (confirm(`Êtes-vous sûr de vouloir supprimer le profil "${name}" ? Cette action est irréversible.`)) {
+
+    const result = await Swal.fire({
+      title: 'Supprimer ce profil ?',
+      text: `Vous êtes sur le point de supprimer "${name}". Cette action est irréversible.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#94a3b8',
+      confirmButtonText: 'Oui, supprimer',
+      cancelButtonText: 'Annuler',
+      background: '#ffffff',
+      borderRadius: '24px',
+      customClass: {
+        popup: 'rounded-[24px] border border-slate-100 shadow-xl',
+        confirmButton: 'rounded-xl px-6 py-2.5 font-bold',
+        cancelButton: 'rounded-xl px-6 py-2.5 font-bold'
+      }
+    })
+
+    if (result.isConfirmed) {
       await deleteProfile(id)
+      Swal.fire({
+        title: 'Profil supprimé',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+        borderRadius: '24px'
+      })
     }
   }
 

@@ -7,6 +7,8 @@ import { ArrowLeft, ChevronLeft, Trash2 } from 'lucide-react'
 import { DeleteProfileButton } from '@/components/profile/DeleteProfileButton'
 import { CVPreviewButton, CVLivePreview } from '@/components/cv/CVDynamic'
 
+import { BackButton } from '@/components/ui/BackButton'
+
 export default async function ProfileEditorPage({
   params,
 }: {
@@ -43,12 +45,7 @@ export default async function ProfileEditorPage({
       {/* Header / Back Navigation */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-4">
-          <Link
-            href="/profile"
-            className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-500 hover:text-blue-600 hover:border-blue-100 hover:shadow-lg transition-all"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </Link>
+          <BackButton href="/profile" />
           <div>
             <h1 className="text-2xl font-bold text-slate-900 leading-tight">
               {profile.name}
@@ -79,7 +76,7 @@ export default async function ProfileEditorPage({
         </div>
 
         {/* RIGHT COLUMN: Live Preview */}
-        <div className="hidden xl:flex w-[50%] h-full flex-col bg-slate-900 rounded-[32px] overflow-hidden shadow-2xl border border-white/5 relative ring-1 ring-white/10">
+        <div className="hidden xl:flex w-[50%] sticky top-6 self-start flex-col bg-slate-900 rounded-[32px] overflow-hidden shadow-2xl border border-white/5 relative ring-1 ring-white/10 h-[calc(100vh-160px)]">
           <div className="bg-slate-950 px-8 py-5 border-b border-white/10 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.6)]" />

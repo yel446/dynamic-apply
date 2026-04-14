@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/Textarea'
 import { Badge, ScoreBadge } from '@/components/ui/Badge'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import Swal from 'sweetalert2'
 
 const STEPS = [
   { label: "L'offre", icon: ClipboardPaste },
@@ -71,7 +72,13 @@ export default function NewApplicationPage() {
       setAnalysis(data)
       setStep(1)
     } catch (e) {
-      alert('Erreur lors de l\'analyse. Vérifiez votre clé API OpenAI.')
+      Swal.fire({
+        title: 'Erreur d\'analyse',
+        text: 'Vérifiez votre clé API OpenAI ou la description de l\'offre.',
+        icon: 'error',
+        confirmButtonColor: '#3b82f6',
+        borderRadius: '24px'
+      })
     } finally {
       setLoading(false)
     }
@@ -95,7 +102,13 @@ export default function NewApplicationPage() {
       setAdaptedCV(data)
       setStep(2)
     } catch (e) {
-      alert('Erreur lors de l\'adaptation du CV.')
+      Swal.fire({
+        title: 'Erreur d\'adaptation',
+        text: 'Une erreur est survenue lors de l\'adaptation du CV.',
+        icon: 'error',
+        confirmButtonColor: '#3b82f6',
+        borderRadius: '24px'
+      })
     } finally {
       setLoading(false)
     }
@@ -127,7 +140,13 @@ export default function NewApplicationPage() {
       }
       setStep(3)
     } catch (e) {
-      alert('Erreur lors de la génération de la lettre.')
+      Swal.fire({
+        title: 'Erreur de génération',
+        text: 'Impossible de générer la lettre de motivation.',
+        icon: 'error',
+        confirmButtonColor: '#3b82f6',
+        borderRadius: '24px'
+      })
     } finally {
       setLoading(false)
     }
@@ -160,7 +179,13 @@ export default function NewApplicationPage() {
       const data = await res.json()
       router.push(`/applications/${data.id}`)
     } catch (e) {
-      alert('Erreur lors de la sauvegarde.')
+      Swal.fire({
+        title: 'Erreur de sauvegarde',
+        text: 'Une erreur est survenue lors de la sauvegarde de votre candidature.',
+        icon: 'error',
+        confirmButtonColor: '#3b82f6',
+        borderRadius: '24px'
+      })
     } finally {
       setLoading(false)
     }

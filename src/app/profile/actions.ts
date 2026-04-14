@@ -107,10 +107,14 @@ export async function updateExperience(formData: FormData) {
   revalidatePath('/profile')
 }
 
-export async function updateMissionBullets(missionId: string, bullets: string[]) {
+export async function updateMission(missionId: string, clientName: string, clientCountry: string | null, bullets: string[]) {
   await prisma.mission.update({
     where: { id: missionId },
-    data: { bullets: JSON.stringify(bullets) },
+    data: { 
+      clientName,
+      clientCountry,
+      bullets: JSON.stringify(bullets) 
+    },
   })
 
   revalidatePath('/profile')
@@ -188,5 +192,31 @@ export async function updateSection(formData: FormData) {
 
 export async function deleteSection(sectionId: string, profileId: string) {
   await prisma.profileSection.delete({ where: { id: sectionId } })
+revalidatePath(`/profile/${profileId}`)
+}
+
+export async function addMission(formData: FormData) {
+  const experienceId = formData.get('experienceId') as string
+  const profileId = formData.get('profileId') as string
+
+  const maxOrder = await prisma.mission.aggregate({
+    where: { experienceId },
+    _max: { order: true },
+  })
+
+  await prisma.mission.create({
+    data: {
+      experienceId,
+      clientName: 'Nouveau Projet / Client',
+      bullets: JSON.stringify(['Nouvelle réalisation...']),
+      order: (maxOrder._max.order ?? -1) + 1,
+    },
+  })
+
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function deleteMission(missionId: string, profileId: string) {
+  await prisma.mission.delete({ where: { id: missionId } })
   revalidatePath(`/profile/${profileId}`)
 }
