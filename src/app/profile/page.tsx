@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { ProfileManager } from '@/components/profile/ProfileManager'
+import { ProfileListView } from '@/components/profile/ProfileListView'
 import { redirect } from 'next/navigation'
 import type { ProfileWithRelations } from '@/types'
 
@@ -29,19 +29,21 @@ export default async function ProfilePage() {
 
   return (
     <div className="w-full animate-fade-in relative max-w-none">
-      <div className="mb-4">
+      <div className="mb-8">
         <h1
-          className="text-2xl font-bold text-slate-900 tracking-tight"
+          className="text-4xl font-extrabold text-slate-900 tracking-tight"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
           Mes Bibliothèques de CV
         </h1>
-        <p className="text-slate-500 mt-1 max-w-2xl text-sm">
-          Naviguez entre vos différents profils de base, modifiez-les, et visualisez instantanément le rendu PDF.
+        <p className="text-slate-500 mt-2 max-w-2xl text-lg font-medium">
+          Naviguez entre vos différents profils de base, ou créez-en un nouveau adapté à un secteur spécifique.
         </p>
       </div>
 
-      <ProfileManager profiles={typedProfiles} />
+      <div className="bg-white/40 backdrop-blur-xl p-8 rounded-[40px] border border-white/60 shadow-xl shadow-slate-200/50">
+        <ProfileListView profiles={typedProfiles} />
+      </div>
     </div>
   )
 }

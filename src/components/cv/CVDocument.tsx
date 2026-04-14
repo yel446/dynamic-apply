@@ -26,19 +26,19 @@ Font.register({
 Font.registerHyphenationCallback((word) => [word])
 
 const COLORS = {
-  primary: '#1A365D', // Dark Blue from Figma
-  accent: '#2B6CB0',  // Lighter accent blue
-  text: '#1F2937',    // Near black
-  textSecondary: '#4B5563', 
-  textLight: '#9CA3AF',
-  border: '#E5E7EB',
+  primary: '#0F172A', // Navy Dark from Figma
+  accent: '#3B82F6',  // Bright Blue
+  text: '#334155',    // Slate/Grey body
+  textSecondary: '#64748B', 
+  textLight: '#94A3B8',
+  border: '#E2E8F0',
   white: '#FFFFFF',
 }
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 45,
-    paddingBottom: 45,
+    paddingTop: 40,
+    paddingBottom: 40,
     paddingHorizontal: 40,
     fontFamily: 'Inter',
     fontSize: 9.5,
@@ -51,17 +51,15 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
     gap: 20,
   },
   photoBox: {
-    width: 85,
-    height: 85,
-    borderRadius: 42.5,
+    width: 80,
+    height: 80,
+    borderRadius: 8, // Square with slight rounding as per Figma
     overflow: 'hidden',
-    borderWidth: 1.5,
-    borderColor: '#F3F4F6',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F1F5F9',
   },
   photo: {
     width: '100%',
@@ -71,60 +69,62 @@ const styles = StyleSheet.create({
   photoPlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#E2E8F0',
   },
   headerInfo: {
     flex: 1,
   },
   name: {
     fontFamily: 'PlusJakartaSans',
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 700,
     color: COLORS.primary,
-    marginBottom: 4,
+    marginBottom: 2,
     letterSpacing: -0.5,
   },
   titleLabel: {
     fontSize: 10,
-    fontWeight: 700,
+    fontWeight: 600,
     color: COLORS.accent,
     textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    marginBottom: 2,
+    letterSpacing: 0.5,
+    marginBottom: 4,
   },
   locationLabel: {
     fontSize: 9,
-    fontStyle: 'italic',
-    color: COLORS.textLight,
+    color: COLORS.textSecondary,
+    fontWeight: 500,
   },
 
   // Contact Icons Row
   contactBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#F3F4F6',
-    marginBottom: 12,
+    paddingVertical: 10,
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderColor: '#E2E8F0',
+    marginBottom: 20,
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    gap: 6,
   },
   contactText: {
     fontSize: 8,
-    color: COLORS.textSecondary,
+    color: COLORS.text,
     fontWeight: 500,
   },
   contactIcon: {
-    width: 14,
-    height: 14,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     backgroundColor: COLORS.primary,
-    borderRadius: 7,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  contactIconText: {
     color: 'white',
     fontSize: 7,
     fontWeight: 700,
@@ -134,83 +134,85 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     marginBottom: 20,
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
   },
   mottoText: {
     fontSize: 9,
-    fontStyle: 'italic',
     color: COLORS.textSecondary,
     lineHeight: 1.4,
+    opacity: 0.85,
   },
 
   // Sections
   section: {
-    marginBottom: 18,
+    marginBottom: 20,
   },
   sectionTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    gap: 8,
+    gap: 10,
   },
   sectionTitle: {
     fontFamily: 'PlusJakartaSans',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 700,
     color: COLORS.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   sectionLineContainer: {
     flex: 1,
-    height: 1,
-    position: 'relative',
-    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   sectionLine: {
-    height: 0.5,
-    backgroundColor: COLORS.accent,
-    opacity: 0.4,
-    width: '100%',
+    height: 1,
+    backgroundColor: COLORS.border,
+    flex: 1,
   },
   sectionLineDot: {
-    position: 'absolute',
-    right: 0,
-    top: -1,
-    width: 2.5,
-    height: 2.5,
-    borderRadius: 1.25,
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
     backgroundColor: COLORS.accent,
-    opacity: 0.6,
+    marginLeft: -1, // Overlap slightly to look connected
   },
 
   // Summary
   summaryText: {
     fontSize: 9,
-    color: COLORS.textSecondary,
+    color: COLORS.text,
     lineHeight: 1.6,
     textAlign: 'justify',
   },
 
   // Skills
   skillsGrid: {
-    flexDirection: 'column',
-    gap: 6,
+    marginTop: 4,
+    gap: 12,
   },
   skillRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    marginBottom: 4,
   },
   skillCategory: {
-    width: 130,
+    width: 120,
     fontSize: 8.5,
     fontWeight: 700,
     color: COLORS.primary,
-    paddingTop: 1,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
   },
   skillList: {
     flex: 1,
     fontSize: 8.5,
-    color: COLORS.textSecondary,
+    color: COLORS.text,
     lineHeight: 1.4,
+    borderLeftWidth: 1.5,
+    borderLeftColor: COLORS.accent,
+    paddingLeft: 10,
+    marginLeft: 0,
   },
 
   // Experience
@@ -220,17 +222,17 @@ const styles = StyleSheet.create({
   expHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'baseline',
     marginBottom: 2,
   },
   expTitle: {
-    fontSize: 10.5,
+    fontSize: 10,
     fontWeight: 700,
-    color: COLORS.text,
+    color: COLORS.primary,
   },
   expLocation: {
-    fontSize: 9,
+    fontSize: 8.5,
     color: COLORS.accent,
-    fontStyle: 'italic',
     fontWeight: 600,
   },
   expCompanyRow: {
@@ -239,29 +241,28 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   expCompany: {
-    fontSize: 9.5,
-    color: COLORS.textSecondary,
+    fontSize: 9,
+    color: COLORS.text,
     fontWeight: 600,
   },
   expDate: {
     fontSize: 8.5,
     color: COLORS.textSecondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   missionBlock: {
     marginTop: 4,
   },
   missionClient: {
-    fontSize: 8.5,
+    fontSize: 8,
     color: COLORS.textSecondary,
-    fontStyle: 'italic',
     marginBottom: 4,
-    fontWeight: 500,
+    fontWeight: 600,
   },
   bulletRow: {
     flexDirection: 'row',
-    marginBottom: 2.5,
-    paddingLeft: 4,
+    marginBottom: 3,
+    paddingLeft: 6,
   },
   bulletDot: {
     width: 8,
@@ -270,13 +271,13 @@ const styles = StyleSheet.create({
   },
   bulletText: {
     flex: 1,
-    fontSize: 8.2, // Smaller font for dense missions like in Image 3
-    color: COLORS.textSecondary,
+    fontSize: 8.2,
+    color: COLORS.text,
     lineHeight: 1.4,
     textAlign: 'justify',
   },
 
-  // Footer / Misc
+  // Education & Other
   simpleGrid: {
     flexDirection: 'row',
     gap: 20,
@@ -290,15 +291,27 @@ const styles = StyleSheet.create({
   eduTitle: {
     fontSize: 9,
     fontWeight: 700,
-    color: COLORS.text,
+    color: COLORS.primary,
   },
   eduSchool: {
     fontSize: 8.5,
-    color: COLORS.textSecondary,
+    color: COLORS.text,
   },
   eduDate: {
     fontSize: 8,
-    color: COLORS.textLight,
+    color: COLORS.textSecondary,
+  },
+  
+  // Interests
+  interestsWrapper: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  interestItem: {
+    fontSize: 8.5,
+    color: COLORS.text,
+    opacity: 0.9,
   },
 })
 
@@ -355,25 +368,25 @@ export function CVDocument({
         <View style={styles.contactBar}>
           {profile.email && (
             <View style={styles.contactItem}>
-              <View style={styles.contactIcon}><Text>@</Text></View>
+              <View style={styles.contactIcon}><Text style={styles.contactIconText}>@</Text></View>
               <Text style={styles.contactText}>{profile.email}</Text>
             </View>
           )}
           {profile.phone && (
             <View style={styles.contactItem}>
-              <View style={[styles.contactIcon, { backgroundColor: '#059669' }]}><Text>✆</Text></View>
+              <View style={[styles.contactIcon, { backgroundColor: '#10B981' }]}><Text style={styles.contactIconText}>✆</Text></View>
               <Text style={styles.contactText}>{profile.phone}</Text>
             </View>
           )}
           {profile.website && (
             <View style={styles.contactItem}>
-              <View style={[styles.contactIcon, { backgroundColor: '#1E293B' }]}><Text>🔗</Text></View>
+              <View style={[styles.contactIcon, { backgroundColor: '#334155' }]}><Text style={styles.contactIconText}>🔗</Text></View>
               <Text style={styles.contactText}>{profile.website.replace(/^https?:\/\//, '')}</Text>
             </View>
           )}
           {profile.linkedin && (
             <View style={styles.contactItem}>
-              <View style={[styles.contactIcon, { backgroundColor: '#0A66C2' }]}><Text>in</Text></View>
+              <View style={[styles.contactIcon, { backgroundColor: '#0A66C2' }]}><Text style={styles.contactIconText}>in</Text></View>
               <Text style={styles.contactText}>{profile.fullName.toLowerCase().replace(/\s+/g, '')}</Text>
             </View>
           )}
@@ -421,7 +434,7 @@ export function CVDocument({
                 <View style={styles.skillRow} wrap={false}>
                   <Text style={styles.skillCategory}>Langues</Text>
                   <Text style={styles.skillList}>
-                    {profile.languages.map(l => `${l.name} (${l.level})`).join(' - ')}
+                    {profile.languages.map(l => `${l.name} (${l.level})`).join('  •  ')}
                   </Text>
                 </View>
               )}
@@ -481,6 +494,7 @@ export function CVDocument({
                 <Text style={styles.sectionTitle}>Formation</Text>
                 <View style={styles.sectionLineContainer}>
                   <View style={styles.sectionLine} />
+                  <View style={styles.sectionLineDot} />
                 </View>
               </View>
               {profile.education.map(edu => (
@@ -499,6 +513,7 @@ export function CVDocument({
                 <Text style={styles.sectionTitle}>Certifications</Text>
                 <View style={styles.sectionLineContainer}>
                   <View style={styles.sectionLine} />
+                  <View style={styles.sectionLineDot} />
                 </View>
               </View>
               {profile.certifications.map(cert => (
@@ -512,6 +527,53 @@ export function CVDocument({
           )}
         </View>
 
+        {/* Centre d'intérêt */}
+        {profile.interests && (
+          <View style={[styles.section, { marginTop: 10 }]}>
+            <View style={styles.sectionTitleRow}>
+              <Text style={styles.sectionTitle}>Centre d'intérêt</Text>
+              <View style={styles.sectionLineContainer}>
+                <View style={styles.sectionLine} />
+                <View style={styles.sectionLineDot} />
+              </View>
+            </View>
+            <View style={styles.interestsWrapper}>
+              {profile.interests.split(',').map((interest, idx) => (
+                <Text key={idx} style={styles.interestItem}>
+                  {interest.trim()}{idx < profile.interests.split(',').length - 1 ? ' • ' : ''}
+                </Text>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Rubriques personnalisées */}
+        {profile.customSections && profile.customSections.length > 0 && (
+          <View>
+            {profile.customSections.map((section) => (
+              <View key={section.id} style={styles.section} wrap={false}>
+                <View style={styles.sectionTitleRow}>
+                  <Text style={styles.sectionTitle}>
+                    {section.icon && (
+                      <Text style={{ color: COLORS.accent }}>
+                        {section.icon.toLowerCase().includes('star') ? '★ ' : 
+                         section.icon.toLowerCase().includes('award') ? '🏅 ' : 
+                         section.icon.toLowerCase().includes('list') ? '• ' : 
+                         '○ '}
+                      </Text>
+                    )}
+                    {section.title}
+                  </Text>
+                  <View style={styles.sectionLineContainer}>
+                    <View style={styles.sectionLine} />
+                    <View style={styles.sectionLineDot} />
+                  </View>
+                </View>
+                <Text style={styles.summaryText}>{section.content}</Text>
+              </View>
+            ))}
+          </View>
+        )}
       </Page>
     </Document>
   )

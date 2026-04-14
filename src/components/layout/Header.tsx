@@ -20,13 +20,7 @@ export function Header() {
           {/* We will let the individual pages handle their headers to match the reference design directly */}
         </div>
         <div className="flex items-center gap-4">
-          <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm border border-gray-100 text-gray-500 hover:text-blue-500 transition-colors">
-            <Bookmark className="w-5 h-5" />
-          </button>
-          <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm border border-gray-100 text-gray-500 hover:text-blue-500 transition-colors relative">
-            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            <Bell className="w-5 h-5" />
-          </button>
+          {/* Icons removed as per user request */}
         </div>
       </div>
     </header>

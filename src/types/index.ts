@@ -25,6 +25,15 @@ export interface ProfileWithRelations {
   education: EducationData[]
   certifications: CertificationData[]
   languages: LanguageData[]
+  customSections: CustomSectionData[]
+}
+
+export interface CustomSectionData {
+  id: string
+  title: string
+  icon: string | null
+  content: string
+  order: number
 }
 
 export interface SkillData {

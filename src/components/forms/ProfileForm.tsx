@@ -1,49 +1,29 @@
 'use client'
 
 import { useState } from 'react'
-import { User, Briefcase, GraduationCap, Award, Globe, Heart, ChevronDown, ChevronUp, Save, Eye, Pencil } from 'lucide-react'
+import { User, Briefcase, GraduationCap, Award, Globe, Heart, ChevronDown, ChevronUp, Save, Eye, Pencil, Plus, Trash2, Layout, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Card } from '@/components/ui/Card'
-import { updateProfile, updateSkill, updateExperience, updateMissionBullets, updateEducation, updateCertification } from '@/app/profile/actions'
+import { 
+  updateProfile, 
+  updateSkill, 
+  updateExperience, 
+  updateMissionBullets, 
+  updateEducation, 
+  updateCertification,
+  addSection,
+  updateSection,
+  deleteSection,
+  addSkill,
+  deleteSkill
+} from '@/app/profile/actions'
 import { cn } from '@/lib/utils'
+import type { ProfileWithRelations } from '@/types'
 
 interface ProfileFormProps {
-  profile: {
-    id: string
-    fullName: string
-    title: string
-    email: string
-    phone: string
-    location: string
-    website: string | null
-    linkedin: string | null
-    photo: string | null
-    motto: string | null
-    summary: string
-    interests: string | null
-    skills: { id: string; category: string; items: string; order: number }[]
-    experiences: {
-      id: string
-      jobTitle: string
-      company: string
-      location: string
-      startDate: string
-      endDate: string | null
-      order: number
-      missions: {
-        id: string
-        clientName: string
-        clientCountry: string | null
-        bullets: string
-        order: number
-      }[]
-    }[]
-    education: { id: string; degree: string; school: string; location: string; date: string; details: string | null; order: number }[]
-    certifications: { id: string; name: string; issuer: string; date: string; order: number }[]
-    languages: { id: string; name: string; level: string }[]
-  }
+  profile: ProfileWithRelations
 }
 
 function AccordionSection({
@@ -125,6 +105,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       {/* Informations personnelles */}
       <AccordionSection title="Informations personnelles" icon={User} defaultOpen>
         <form action={handleSaveProfile} className="space-y-4">
+          <Input label="Nom du variant (ex: Profil Base Complet)" name="name" defaultValue={profile.name} required />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Nom complet" name="fullName" defaultValue={profile.fullName} required />
             <Input label="Titre" name="title" defaultValue={profile.title} required />
@@ -302,19 +283,70 @@ export function ProfileForm({ profile }: ProfileFormProps) {
 
       {/* Centres d'intérêt */}
       {profile.interests && (
-        <AccordionSection title="Centres d'intérêt" icon={Heart}>
-          <div className="flex flex-wrap gap-2">
-            {profile.interests.split(' - ').map((interest, i) => (
-              <span
-                key={i}
-                className="px-3 py-1.5 rounded-full bg-[var(--color-neutral-100)] text-xs font-medium text-[var(--color-neutral-600)]"
-              >
-                {interest.trim()}
-              </span>
-            ))}
-          </div>
         </AccordionSection>
       )}
+
+      {/* Sections Personnalisées */}
+      <AccordionSection title="Rubriques personnalisées" icon={Sparkles}>
+        <div className="space-y-6">
+          {profile.customSections.map((section) => (
+            <form
+              key={section.id}
+              action={updateSection}
+              className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-4"
+            >
+              <input type="hidden" name="sectionId" value={section.id} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Titre de la rubrique" name="title" defaultValue={section.title} required />
+                <Input label="Icône (ex: Award, Star, List)" name="icon" defaultValue={section.icon || ''} placeholder="Award" />
+              </div>
+              <Textarea
+                label="Contenu"
+                name="content"
+                defaultValue={section.content}
+                className="min-h-[100px]"
+                required
+              />
+              <div className="flex justify-between items-center pt-2">
+                <button
+                  type="button"
+                  onClick={() => deleteSection(section.id, profile.id)}
+                  className="text-xs text-red-500 hover:text-red-700 font-semibold flex items-center gap-1.5"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Supprimer la rubrique
+                </button>
+                <Button type="submit" size="sm" variant="secondary" isLoading={saving === `section-${section.id}`}>
+                  <Save className="w-3.5 h-3.5" />
+                  Mettre à jour
+                </Button>
+              </div>
+            </form>
+          ))}
+
+          {/* New Section Form */}
+          <form
+            action={addSection}
+            className="p-6 rounded-2xl border-2 border-dashed border-slate-200 bg-white/50 space-y-4"
+          >
+            <input type="hidden" name="profileId" value={profile.id} />
+            <div className="flex items-center gap-2 mb-2">
+              <Plus className="w-4 h-4 text-blue-500" />
+              <h4 className="text-sm font-bold text-slate-700">Nouvelle rubrique personnalisée</h4>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input label="Titre" name="title" placeholder="Ex: Projets, Logiciels, etc." required />
+              <Input label="Icône" name="icon" placeholder="Star" />
+            </div>
+            <Textarea label="Contenu" name="content" placeholder="Détails de la rubrique..." required />
+            <div className="flex justify-end">
+              <Button type="submit" size="sm" variant="primary">
+                Ajouter la rubrique
+              </Button>
+            </div>
+          </form>
+        </div>
+      </AccordionSection>
     </div>
   )
 }

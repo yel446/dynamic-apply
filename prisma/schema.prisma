@@ -30,7 +30,18 @@ model Profile {
   education      Education[]
   certifications Certification[]
   languages      Language[]
+  customSections ProfileSection[]
   applications   Application[]
+}
+
+model ProfileSection {
+  id        String  @id @default(cuid())
+  title     String  // ex: "Logiciels", "Distinctions"
+  icon      String? // Lucide icon name
+  content   String  @db.Text
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  order     Int     @default(0)
 }
 
 model Skill {

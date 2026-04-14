@@ -2,6 +2,29 @@
 
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+
+export async function createProfile(formData: FormData) {
+  const profile = await prisma.profile.create({
+    data: {
+      fullName: 'Nouveau Profil',
+      title: 'Titre du poste',
+      email: '',
+      phone: '',
+      location: '',
+      summary: 'À propos de moi...',
+    },
+  })
+
+  revalidatePath('/profile')
+  redirect(`/profile/${profile.id}`)
+}
+
+export async function deleteProfile(profileId: string) {
+  await prisma.profile.delete({ where: { id: profileId } })
+  revalidatePath('/profile')
+  redirect('/profile')
+}
 
 export async function updateProfile(formData: FormData) {
   const profileId = formData.get('profileId') as string
@@ -9,6 +32,7 @@ export async function updateProfile(formData: FormData) {
   await prisma.profile.update({
     where: { id: profileId },
     data: {
+      name: formData.get('name') as string,
       fullName: formData.get('fullName') as string,
       title: formData.get('title') as string,
       email: formData.get('email') as string,
@@ -23,7 +47,7 @@ export async function updateProfile(formData: FormData) {
     },
   })
 
-  revalidatePath('/profile')
+  revalidatePath(`/profile/${profileId}`)
 }
 
 export async function updateSkill(formData: FormData) {
@@ -121,5 +145,48 @@ export async function updateCertification(formData: FormData) {
     },
   })
 
-  revalidatePath('/profile')
+  revalidatePath(`/profile/${certificationId}`)
+}
+
+export async function addSection(formData: FormData) {
+  const profileId = formData.get('profileId') as string
+  const title = formData.get('title') as string
+  const content = formData.get('content') as string
+  const icon = formData.get('icon') as string
+
+  const maxOrder = await prisma.profileSection.aggregate({
+    where: { profileId },
+    _max: { order: true },
+  })
+
+  await prisma.profileSection.create({
+    data: {
+      profileId,
+      title,
+      content,
+      icon: icon || null,
+      order: (maxOrder._max.order ?? -1) + 1,
+    },
+  })
+
+  revalidatePath(`/profile/${profileId}`)
+}
+
+export async function updateSection(formData: FormData) {
+  const sectionId = formData.get('sectionId') as string
+  const title = formData.get('title') as string
+  const content = formData.get('content') as string
+  const icon = formData.get('icon') as string
+
+  const section = await prisma.profileSection.update({
+    where: { id: sectionId },
+    data: { title, content, icon: icon || null },
+  })
+
+  revalidatePath(`/profile/${section.profileId}`)
+}
+
+export async function deleteSection(sectionId: string, profileId: string) {
+  await prisma.profileSection.delete({ where: { id: sectionId } })
+  revalidatePath(`/profile/${profileId}`)
 }
